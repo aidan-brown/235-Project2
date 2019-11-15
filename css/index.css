@@ -1,0 +1,117 @@
+.page-buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#content{
+    display: grid;
+    grid-template-columns: repeat(5, minmax(200px, 1fr));
+    grid-gap: 10px;
+}
+
+.poke-info{
+    display: grid;
+    grid-template-areas: 
+    "name name"
+    "sprite stats"
+    "types types";
+
+    background: red;
+}
+
+.poke-name{
+    grid-area: name;
+
+    text-align: center;
+}
+
+.poke-sprite{
+    grid-area: sprite;
+}
+
+.poke-stats{
+    grid-area: stats;
+
+    font-size: 0.75rem;
+}
+
+.poke-types{
+    grid-area: types;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+/* Types */
+
+.poke-types .water{
+    background: slateblue;
+}
+
+.poke-types .fire{
+    background: orange;
+}
+
+.poke-types .grass{
+    background: lightgreen;
+}
+
+.poke-types .normal{
+    background: lightgray;
+}
+
+.poke-types .poison{
+    background: purple;
+}
+
+.poke-types .flying{
+    background: skyblue;
+}
+
+.poke-types .bug{
+    background: green;
+}
+
+.poke-types .electric{
+    background: yellow;
+}
+
+.poke-types .ground{
+    background: goldenrod;
+}
+
+.poke-types .fairy{
+    background: pink;
+}
+
+.poke-types .psychic{
+    background: violet;
+}
+
+.poke-types .steel{
+    background: grey;
+}
+
+.poke-types .dark{
+    background: darkslategrey;
+}
+
+.poke-types .ghost{
+    background: darkviolet;
+}
+
+.poke-types .fighting{
+    background: darkorange;
+}
+
+.poke-types .ice{
+    background: cyan;
+}
+
+.poke-types .dragon{
+    background: orangered;
+}
