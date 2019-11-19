@@ -6,35 +6,40 @@
 }
 
 #content{
-    display: grid;
-    grid-template-columns: repeat(5, minmax(200px, 1fr));
-    grid-gap: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
 }
 
-.poke-info{
+.poke-display{
     display: grid;
     grid-template-areas: 
-    "name name"
-    "sprite stats"
-    "types types";
+    "name name name name"
+    "sprite sprite stats stats"
+    "sprite sprite types types";
+    grid-template-columns: 1fr 2fr 2fr;
+    grid-template-rows: 1fr 2fr 2fr;
 
     background: red;
+    width: 50rem;
 }
 
 .poke-name{
     grid-area: name;
 
     text-align: center;
+    font-size: 3rem;
 }
 
 .poke-sprite{
     grid-area: sprite;
+
+    width: 25rem;
 }
 
 .poke-stats{
     grid-area: stats;
-
-    font-size: 0.75rem;
 }
 
 .poke-types{
