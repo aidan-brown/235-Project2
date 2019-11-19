@@ -25,8 +25,6 @@ function getPokemon(){
 
     let data = JSON.parse(req.responseText).results;
 
-    updateLinks(data, genSelect.value, typeSelect1.value, typeSelect2.value);
-
     for(let i = 0; i < data.length; i++){
         createPokeElement(data[i], i + 1);
         if(i == 1){
@@ -55,8 +53,9 @@ function createPokeElement(pokeData, id){
 
 async function getPokeData(){
     const p = getPokemon();
-
     await p;
+    
+    updateLinks(currentGen, currentType1, currentType2);
 
     for(let i = 1; i < pokeElements.length; i++){
         let req = new XMLHttpRequest();
@@ -107,40 +106,148 @@ function updateDisplay(index){
     }
 }
 
-function updateLinks(data, gen, type1, type2){
+function updateLinks(gen, type1, type2){
     let pokeLinks = document.querySelector('.poke-links');
     pokeLinks.innerHTML = '';
+    for(let i = 1; i < pokeElements.length; i++){
+        if(filterPokemon(i, gen, type1, type2)){
+            let pokeLink = document.createElement('p');
 
-    for(let i = 0; i < data.length; i++){
-        
-        let pokeLink = document.createElement('p');
+            pokeLink.innerHTML = `#${i}: ` + pokeElements[i].name;
 
-        pokeLink.innerHTML = `#${i+1}: ` + data[i].name[0].toUpperCase() + data[i].name.slice(1);
-        if(pokeLink.innerHTML[pokeLink.innerHTML.length - 2] == '-'){
-            pokeLink.innerHTML = pokeLink.innerHTML.slice(0, pokeLink.innerHTML.length - 1) + pokeLink.innerHTML[pokeLink.innerHTML.length - 1].toUpperCase();
+            pokeLink.className = 'poke-link';
+            pokeLink.onclick = () => {
+                currentId = i;
+                updateDisplay(currentId);
+            }
+
+            pokeLinks.append(pokeLink);
         }
-
-        pokeLink.className = 'poke-link';
-        pokeLink.onclick = () => {
-            currentId = i + 1;
-            updateDisplay(currentId);
-        }
-
-        pokeLinks.append(pokeLink);
     }
 }
 
-function filterPokemon(pokemonId, gen, type1, type2){
-    
+function filterPokemon(pokemonId, generation, type1, type2){
+    let pokemon = pokeElements[pokemonId];
+    if(generation == 'none' && type1 == 'none' && type2 == 'none'){
+        return true;
+    }
+    else{
+        let check = false;
+
+        switch(generation){
+            case 'I':
+                    if(pokemonId <= gen.I){
+                        check = true;
+                    }
+                    else{
+                        check = false;
+                    }
+                break;
+
+            case 'II':
+                    if(pokemonId > gen.I && pokemonId <= gen.II){
+                        check = true;
+                    }
+                    else{
+                        check = false;
+                    }
+                break;
+
+            case 'III':
+                    if(pokemonId > gen.II && pokemonId <= gen.III){
+                        check = true;
+                    }
+                    else{
+                        check = false;
+                    }
+                break;
+
+            case 'IV':
+                    if(pokemonId > gen.III && pokemonId <= gen.IV){
+                        check = true;
+                    }
+                    else{
+                        check = false;
+                    }
+                break;
+
+            case 'V':
+                    if(pokemonId > gen.IV && pokemonId <= gen.V){
+                        check = true;
+                    }
+                    else{
+                        check = false;
+                    }
+                break;
+
+            case 'VI':
+                    if(pokemonId > gen.V && pokemonId <= gen.VI){
+                        check = true;
+                    }
+                    else{
+                        check = false;
+                    }
+                break;
+
+            case 'VII':
+                if(pokemonId > gen.VI && pokemonId <= gen.VII){
+                    check = true;
+                }
+                else{
+                    check = false;
+                }
+                break;
+
+            default:
+                check = true;
+                break;
+        }
+
+        if(pokemon.data.types.length > 1){
+            if(type2 != type1){
+                
+                if(check && (
+                    (type1 == 'none' && type2 == 'none') || (
+                        (type1 == pokemon.data.types[1].type.name || type1 == 'none') &&
+                        (type2 == pokemon.data.types[0].type.name || type2 == 'none')
+                       )
+                    )
+                ){
+                    check = true;
+                }
+                else{
+                    check = false;
+                }
+            }
+            else{
+                check = false;
+            }
+        }
+        else{
+            if((check && type1 == 'none' && type2 == 'none') || type1 == pokemon.data.types[0].type.name){
+                check = true;
+            }
+            else{
+                check = false;
+            }
+        }
+
+        
+
+        return check;
+    }
 }
 
 let currentId = 1;
+let currentGen = 'none';
+let currentType1 = 'none';
+let currentType2 = 'none';
 
 let forwardArrow = document.querySelector('.page-forward');
 let backArrow = document.querySelector('.page-back');
 let genSelect = document.querySelector('#gen');
-let typeSelect1 = document.querySelector('type1');
-let typeSelect2 = document.querySelector('type2');
+let typeSelect1 = document.querySelector('#type1');
+let typeSelect2 = document.querySelector('#type2');
 
 forwardArrow.onclick = () => {
     if(limit > currentId){
@@ -159,8 +266,19 @@ backArrow.onclick = () => {
 };
 
 genSelect.onchange = () => {
-    console.log(genSelect.value);
+    currentGen = genSelect.value;
+    updateLinks(currentGen, currentType1, currentType2);
 };
+
+typeSelect1.onchange = () => {
+    currentType1 = typeSelect1.value;
+    updateLinks(currentGen, currentType1, currentType2);
+}
+
+typeSelect2.onchange = () => {
+    currentType2 = typeSelect2.value;
+    updateLinks(currentGen, currentType1, currentType2);
+}
 
 
 getPokeData();
