@@ -1,5 +1,15 @@
+const gen = {
+    I : 151,
+    II : 251,
+    III : 386,
+    IV : 493,
+    V : 649,
+    VI : 721,
+    VII : 802
+}
+
 let pokeElements = new Array();
-let limit = 807;
+let limit = 802;
 
 function getPokemon(){
     let content = document.querySelector('#content');
@@ -15,23 +25,24 @@ function getPokemon(){
 
     let data = JSON.parse(req.responseText).results;
 
-    updateLinks(data);
+    updateLinks(data, genSelect.value, typeSelect1.value, typeSelect2.value);
 
     for(let i = 0; i < data.length; i++){
         createPokeElement(data[i], i + 1);
         if(i == 1){
             let dataReq = new XMLHttpRequest();
-
-            req.onload = () => console.log(dataReq.responseText);
             req.open('get', pokeElements[i].url, true);
             req.send();
         }
+
+        if(i == data.length - 1){
+            return new Promise(resolve => {
+                resolve("p");
+            });
+        }
     }
 
-    return new Promise(resolve => {
-        resolve("p");
-        console.log('resolved p');
-    });
+    
 }
 
 function createPokeElement(pokeData, id){
@@ -94,30 +105,42 @@ function updateDisplay(index){
         }
         pokeDisplay.append(pokeStats);
     }
-
-    content.append(pokeDisplay);
 }
 
-function updateLinks(data){
+function updateLinks(data, gen, type1, type2){
     let pokeLinks = document.querySelector('.poke-links');
     pokeLinks.innerHTML = '';
 
     for(let i = 0; i < data.length; i++){
+        
         let pokeLink = document.createElement('p');
-        pokeLink.innerHTML = data[i].name[0].toUpperCase() + data[i].name.slice(1);
 
+        pokeLink.innerHTML = `#${i+1}: ` + data[i].name[0].toUpperCase() + data[i].name.slice(1);
+        if(pokeLink.innerHTML[pokeLink.innerHTML.length - 2] == '-'){
+            pokeLink.innerHTML = pokeLink.innerHTML.slice(0, pokeLink.innerHTML.length - 1) + pokeLink.innerHTML[pokeLink.innerHTML.length - 1].toUpperCase();
+        }
+
+        pokeLink.className = 'poke-link';
         pokeLink.onclick = () => {
             currentId = i + 1;
+            updateDisplay(currentId);
         }
 
         pokeLinks.append(pokeLink);
     }
 }
 
+function filterPokemon(pokemonId, gen, type1, type2){
+    
+}
+
 let currentId = 1;
 
 let forwardArrow = document.querySelector('.page-forward');
 let backArrow = document.querySelector('.page-back');
+let genSelect = document.querySelector('#gen');
+let typeSelect1 = document.querySelector('type1');
+let typeSelect2 = document.querySelector('type2');
 
 forwardArrow.onclick = () => {
     if(limit > currentId){
@@ -133,6 +156,10 @@ backArrow.onclick = () => {
 
         updateDisplay(currentId);
     }
+};
+
+genSelect.onchange = () => {
+    console.log(genSelect.value);
 };
 
 

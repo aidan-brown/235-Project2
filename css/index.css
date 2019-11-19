@@ -120,3 +120,25 @@
 .poke-types .dragon{
     background: orangered;
 }
+
+/* Types */
+
+.poke-links{
+    width: 75%;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+
+    
+}
+
+.poke-link{
+    color: darkslateblue;
+    text-align: center;
+    padding: 2rem
+}
+
+.poke-link:hover{
+    color: slateblue;
+    cursor: pointer;
+}
