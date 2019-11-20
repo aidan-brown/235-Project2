@@ -11,9 +11,13 @@ const gen = {
 let pokeElements = new Array();
 let limit = 802;
 
-function getPokemon(){
-    let content = document.querySelector('#content');
+const pokemonMoves = {};
+let moveLimit = 746;
 
+let content = document.querySelector('#content');
+
+
+function getPokemon(){
     let url = `https://pokeapi.co/api/v2/pokemon?limit=${limit}`;
 
     let req = new XMLHttpRequest();
@@ -43,6 +47,29 @@ function getPokemon(){
     
 }
 
+function getMoves(){
+    let req = new XMLHttpRequest();
+
+    req.onload = () => {
+        let data = JSON.parse(req.responseText).results;
+
+        for(let move of data){
+            let dataReq = new XMLHttpRequest();
+
+            dataReq.onload = () => {
+                let moveData = JSON.parse(dataReq.responseText);
+                pokemonMoves[move.name] = {id: moveData.id, type: moveData.type.name[0].toUpperCase() + moveData.type.name.slice(1), damageType: moveData.damage_class.name[0].toUpperCase() + moveData.damage_class.name, power: moveData.power, pp: moveData.pp, accuracy: moveData.accuracy}
+            }; 
+            dataReq.open('get', move.url, true);
+            dataReq.send();
+        }
+
+        
+    };
+    req.open('get', `https://pokeapi.co/api/v2/move?limit=${moveLimit}`, true);
+    req.send();
+}
+
 function createPokeElement(pokeData, id){
     let pokeElement = {name: pokeData.name[0].toUpperCase() + pokeData.name.slice(1), url: pokeData.url, data: null};
     if(pokeElement.name[pokeElement.name.length - 2] == '-'){
@@ -64,6 +91,8 @@ async function getPokeData(){
         req.open('get', pokeElements[i].url, true);
         req.send();
     }
+
+    getMoves();
 }
 
 function setData(index, data){
@@ -73,36 +102,53 @@ function setData(index, data){
 function updateDisplay(index){
     let currentPokemon = pokeElements[index];
 
-    let pokeDisplay = document.querySelector('.poke-display');
-    pokeDisplay.innerHTML = '';
-
-    let pokeName = document.createElement('h2');
-    pokeName.className = 'poke-name';
+    let pokeName = document.querySelector('.poke-name');
     pokeName.innerHTML = currentPokemon.name;
-    pokeDisplay.append(pokeName);
 
     if(currentPokemon.data){
-        let pokeSprite = document.createElement('img');
-        pokeSprite.className = 'poke-sprite'
-        pokeSprite.src = currentPokemon.data.sprites['front_default'];
-        pokeDisplay.append(pokeSprite);
+        let pokeSprite = document.querySelector('.poke-sprite');
+        if(currentPokemon.data.types.length > 1){
+            pokeSprite.style.backgroundImage = `url(../images/types/${currentPokemon.data.types[1].type.name}.png)`;
+        }
+        else{
+            pokeSprite.style.backgroundImage = `url(../images/types/${currentPokemon.data.types[0].type.name}.png)`;
+        }
+        pokeSprite.innerHTML = `<img src=${currentPokemon.data.sprites['front_default']} />`
 
-        let pokeTypes = document.createElement('div');
-        pokeTypes.className = 'poke-types';
+        let pokeTypes = document.querySelector('.poke-types');
+        pokeTypes.innerHTML = '';
         for(let i = currentPokemon.data.types.length - 1; i >= 0; i--){
             let pokeType = document.createElement('p');
             pokeType.className = currentPokemon.data.types[i].type.name;
             pokeType.innerHTML = currentPokemon.data.types[i].type.name[0].toUpperCase() + currentPokemon.data.types[i].type.name.slice(1);
             pokeTypes.append(pokeType);
         }
-        pokeDisplay.append(pokeTypes);
 
-        let pokeStats = document.createElement('p');
-        pokeStats.className = 'poke-stats';
+        let pokeStats = document.querySelector('.poke-stats');
+        pokeStats.innerHTML = '';
+        let stats = document.createElement('p');
         for(let i = 0; i < currentPokemon.data.stats.length; i++){
-            pokeStats.innerHTML += `${currentPokemon.data.stats[i].stat.name[0].toUpperCase() + currentPokemon.data.stats[i].stat.name.slice(1)}: ${currentPokemon.data.stats[i].base_stat}<br/>`;
+            stats.innerHTML += `${currentPokemon.data.stats[i].stat.name[0].toUpperCase() + currentPokemon.data.stats[i].stat.name.slice(1)}: ${currentPokemon.data.stats[i].base_stat}<br/>`;
         }
-        pokeDisplay.append(pokeStats);
+        pokeStats.append(stats);
+
+        if(pokemonMoves){
+            let pokeMoves = document.querySelector('.poke-moves');
+            pokeMoves.innerHTML = '';
+            for(let move of currentPokemon.data.moves){
+                let pokeMove = document.createElement('p');
+                let name = move.move.name[0].toUpperCase() + move.move.name.slice(1);
+                while(name.indexOf('-') != -1){
+                    let hyIndex = name.indexOf('-');
+
+                    name = name.slice(0, hyIndex) + ' ' + name[hyIndex + 1].toUpperCase() + name.slice(hyIndex + 2);
+                }
+
+                pokeMove.innerHTML += `<strong>${name}</strong></br>  Type: ${pokemonMoves[move.move.name].type}</br>  `;
+                pokeMoves.append(pokeMove);
+            }
+        }
+        
     }
 }
 
@@ -203,36 +249,32 @@ function filterPokemon(pokemonId, generation, type1, type2){
                 break;
         }
 
-        if(pokemon.data.types.length > 1){
-            if(type2 != type1){
-                
-                if(check && (
-                    (type1 == 'none' && type2 == 'none') || (
-                        (type1 == pokemon.data.types[1].type.name || type1 == 'none') &&
-                        (type2 == pokemon.data.types[0].type.name || type2 == 'none')
-                       )
-                    )
-                ){
-                    check = true;
+        
+
+        if(type1 != 'none' || type2 != 'none'){
+            if(pokemon.data.types.length > 1){
+                if(type2 != type1){
+                    
+                    if(check && ((type1 == pokemon.data.types[1].type.name && type2 == pokemon.data.types[0].type.name) || (type1 == pokemon.data.types[1].type.name && type2 == 'none') || (type1 == 'none' && type2 == pokemon.data.types[0].type.name))){
+                        check = true;
+                    }
+                    else{
+                        check = false;
+                    }
                 }
                 else{
                     check = false;
                 }
             }
             else{
-                check = false;
+                if(check && type1 == pokemon.data.types[0].type.name && (type2 == 'none' || type2 == type1)){
+                    check = true;
+                }
+                else{
+                    check = false;
+                }
             }
         }
-        else{
-            if((check && type1 == 'none' && type2 == 'none') || type1 == pokemon.data.types[0].type.name){
-                check = true;
-            }
-            else{
-                check = false;
-            }
-        }
-
-        
 
         return check;
     }

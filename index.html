@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>235 - PokeDex</title>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel='stylesheet' type='text/css' href='./css/index.css'>
     
 </head>
@@ -19,10 +20,16 @@
     </div>
 
     <div id='content'>
-        <section class="poke-display"></section>
+        <section class="poke-display">
+            <h2 class="poke-name"></h2>
+            <div class="poke-sprite"></div>
+            <div class="poke-types"></div>
+            <div class="poke-stats"></div>
+            <div class="poke-moves"></div>
+        </section>
         <div class="filters">
             <select id="gen">
-                <option value="none">Choose a Gen</option>
+                <option value="none">Any</option>
                 <option value="I">I</option>
                 <option value="II">II</option>
                 <option value="III">III</option>
@@ -32,7 +39,7 @@
                 <option value="VII">VII</option>
             </select>
             <select id="type1">
-                <option value="none">Choose a Type</option>
+                <option value="none">Any</option>
                 <option value="normal">Normal</option>
                 <option value="fighting">Fighting</option>
                 <option value="flying">Flying</option>
@@ -53,7 +60,7 @@
                 <option value="fairy">Fairy</option>
             </select>
             <select id="type2">
-                    <option value="none">Choose a Type</option>
+                    <option value="none">Any</option>
                     <option value="normal">Normal</option>
                     <option value="fighting">Fighting</option>
                     <option value="flying">Flying</option>
