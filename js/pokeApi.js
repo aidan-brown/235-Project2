@@ -133,16 +133,42 @@ function updateDisplay(index){
     let currentPokemon = pokeElements[index];
 
     let pokeName = document.querySelector('.poke-name');
-    let name = currentPokemon.name[0].toUpperCase() + currentPokemon.name.slice(1);
+    let name = '';
+    if(currentPokemon.data){
+        name = currentPokemon.data.species.name[0].toUpperCase() + currentPokemon.data.species.name.slice(1);
+    }
+    else{
+        name = currentPokemon.name[0].toUpperCase() + currentPokemon.name.slice(1);
+    }
+    
     while(name.indexOf('-') != -1){
         let hyIndex = name.indexOf('-');
 
         name = name.slice(0, hyIndex) + ' ' + name[hyIndex + 1].toUpperCase() + name.slice(hyIndex + 2);
     }
+
+    if(currentPokemon.data){
+        if(currentPokemon.name.toLowerCase() != currentPokemon.data.species.name.toLowerCase()){
+            console.log(`Name: ${currentPokemon.name}; Species: ${currentPokemon.data.species.name}`)
+            let form = currentPokemon.name.slice(currentPokemon.data.species.name.length + 1);
+            console.log(form);
+            form = `(${form[0].toUpperCase() + form.slice(1)} Form)`;
+    
+            name += ` ${form}`;
+        }
+    }
+
     pokeName.innerHTML = name;
 
     let pokeWiki = document.querySelector('.poke-wiki');
-    let linkName = currentPokemon.name.toLowerCase();
+    let linkName = '';
+    if(currentPokemon.data){
+        linkName = currentPokemon.data.species.name.toLowerCase();
+    }
+    else{
+        linkName = currentPokemon.name.toLowerCase();
+    }
+
     if(linkName.slice(linkName.length - 2) == '-f'){
         linkName += 'emale';
     }
