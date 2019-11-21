@@ -4,63 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>235 - PokeDex</title>
+    <title>235 - Pokédex</title>
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel='stylesheet' type='text/css' href='./css/index.css'>
     
 </head>
 <body>
     <header>
-        <h1>PokeDex</h1>
+        <h1>Pokédex</h1>
     </header>
 
-    <div class="page-buttons">
-        <button class="page-back">&larr;</button>
-        <button class="page-forward">&rarr;</button>
-    </div>
+    
 
-    <div id='content'>
-        <section class="poke-display">
-            <h2 class="poke-name"></h2>
-            <div class="poke-sprite"></div>
-            <div class="poke-types"></div>
-            <div class="poke-stats"></div>
-            <div class="poke-abilities"></div>
-        </section>
-        <div class="filters">
-            <select id="gen">
-                <option value="none">Any</option>
-                <option value="I">I</option>
-                <option value="II">II</option>
-                <option value="III">III</option>
-                <option value="IV">IV</option>
-                <option value="V">V</option>
-                <option value="VI">VI</option>
-                <option value="VII">VII</option>
-            </select>
-            <select id="type1">
-                <option value="none">Any</option>
-                <option value="normal">Normal</option>
-                <option value="fighting">Fighting</option>
-                <option value="flying">Flying</option>
-                <option value="poison">Poison</option>
-                <option value="ground">Ground</option>
-                <option value="rock">Rock</option>
-                <option value="bug">Bug</option>
-                <option value="ghost">Ghost</option>
-                <option value="steel">Steel</option>
-                <option value="fire">Fire</option>
-                <option value="water">Water</option>
-                <option value="grass">Grass</option>
-                <option value="electric">Electric</option>
-                <option value="psychic">Psychic</option>
-                <option value="ice">Ice</option>
-                <option value="dragon">Dragon</option>
-                <option value="dark">Dark</option>
-                <option value="fairy">Fairy</option>
-            </select>
-            <select id="type2">
-                    <option value="none">Any</option>
+    <main>
+        <button class="page-button page-back">&larr;</button>
+        <button class="page-button page-forward">&rarr;</button>
+        <div id='content'>
+            <section class="poke-display">
+                <h2 class="poke-name"></h2>
+                <div class="poke-sprite"></div>
+                <div class="poke-types"></div>
+                <div class="poke-stats"></div>
+                <div class="poke-abilities"></div>
+            </section>
+            <div class="filters">
+                <select id="gen">
+                    <option value="none">Any Generation</option>
+                    <option value="I">I</option>
+                    <option value="II">II</option>
+                    <option value="III">III</option>
+                    <option value="IV">IV</option>
+                    <option value="V">V</option>
+                    <option value="VI">VI</option>
+                    <option value="VII">VII</option>
+                </select>
+                <select id="type1">
+                    <option value="none">Any Primary Type</option>
                     <option value="normal">Normal</option>
                     <option value="fighting">Fighting</option>
                     <option value="flying">Flying</option>
@@ -80,9 +59,31 @@
                     <option value="dark">Dark</option>
                     <option value="fairy">Fairy</option>
                 </select>
+                <select id="type2">
+                        <option value="none">Any Secondary Type</option>
+                        <option value="normal">Normal</option>
+                        <option value="fighting">Fighting</option>
+                        <option value="flying">Flying</option>
+                        <option value="poison">Poison</option>
+                        <option value="ground">Ground</option>
+                        <option value="rock">Rock</option>
+                        <option value="bug">Bug</option>
+                        <option value="ghost">Ghost</option>
+                        <option value="steel">Steel</option>
+                        <option value="fire">Fire</option>
+                        <option value="water">Water</option>
+                        <option value="grass">Grass</option>
+                        <option value="electric">Electric</option>
+                        <option value="psychic">Psychic</option>
+                        <option value="ice">Ice</option>
+                        <option value="dragon">Dragon</option>
+                        <option value="dark">Dark</option>
+                        <option value="fairy">Fairy</option>
+                    </select>
+            </div>
+            <div class="poke-links"></div>
         </div>
-        <div class="poke-links"></div>
-    </div>
+    </main>
 
     <script src="./js/pokeApi.js"></script>
 </body>

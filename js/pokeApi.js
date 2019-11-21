@@ -173,8 +173,17 @@ function updateDisplay(index){
 
                     name = name.slice(0, hyIndex) + ' ' + name[hyIndex + 1].toUpperCase() + name.slice(hyIndex + 2);
                 }
+                if(pokemonAbilities[ability.ability.name]){
+                    pokeAbility.innerHTML += `<strong>${name}</strong></br>       ${pokemonAbilities[ability.ability.name]}</br>`;
+                }
+                else{
+                    let req = new XMLHttpRequest();
 
-                pokeAbility.innerHTML += `<strong>${name}</strong></br>       ${pokemonAbilities[ability.ability.name]}</br>`;
+                    req.open('get', ability.ability.url, false);
+                    req.send();
+
+                    pokeAbility.innerHTML += `<strong>${name}</strong></br>       ${JSON.parse(req.responseText).effect_entries[0].effect}</br>`;
+                }
                 pokeAbilities.append(pokeAbility);
             }
         }
@@ -374,4 +383,4 @@ getPokeData();
 
 setTimeout(() => {
     updateDisplay(currentId);
-}, 300)
+}, 500)

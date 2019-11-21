@@ -1,11 +1,65 @@
-.page-buttons{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+body{
+    background: url(../images/background.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+
+    margin: 0;
+    padding: 0;
+}
+
+header{
+    width: 100%;
+
+    margin: 0;
+    padding: 0;
+}
+
+header h1{
+    background: darkred;
+    color: white;
+    font-family: 'Press Start 2P', Arial, Helvetica, sans-serif;
+    font-size: 3rem;
+
+    margin: 0;
+    padding: 2rem;
+}
+
+main{
+    display: grid;
+    grid-template-areas: 
+    "back content forward";
+    grid-template-columns: 1fr 4fr 1fr;
+
+    background: red;
+
+    width: 75%;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.page-button{
+    width: 4rem;
+    height: 4rem;
+}
+
+.page-back{
+    grid-area: back;
+
+    margin: auto 0 auto auto;
+}
+
+.page-forward{
+    grid-area: forward;
+
+
+    margin: auto auto auto 0;
 }
 
 #content{
+    grid-area: content;
+    
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -14,16 +68,16 @@
 
     background: lightgray;
     border-style: solid;
-    border-color: red;
+    border-color: darkred;
     border-width: 2rem;
 
     width: 75rem;
 
-    font-family: 'Press Start 2P', sans-serif;
+    font-family: 'Press Start 2P', Arial, Helvetica, sans-serif;
 }
 
 .poke-display{
-    background: url(../images/background.jpg);
+    background: url(../images/dexScreen.jpg);
     background-position: center;
 
     display: grid;
@@ -63,7 +117,7 @@
     margin-left: auto;
 
     border-style: solid;
-    border-color: darkred;
+    border-color: red;
     border-width: .5rem .5rem 0 0;
 
     display: flex;
@@ -83,7 +137,7 @@
     margin: 0;
     padding: .25rem;
 
-    background: darkred;
+    background: red;
     color: lightpink;
 }
 
@@ -94,7 +148,7 @@
     margin: auto;
 
     border-top-style: solid;
-    border-top-color: darkred;
+    border-top-color: red;
     border-top-width: .5rem;
 }
 
@@ -109,7 +163,7 @@
     height: 10rem;
 
     border-top-style: solid;
-    border-top-color: darkred;
+    border-top-color: red;
     border-top-width: .5rem;
 
     overflow-y: scroll;
@@ -235,7 +289,25 @@
 
 .filters{
     width: 100%;
+    background: red;
     border-top-style: solid;
-    border-top-color: red;
+    border-top-color: darkred;
     border-top-width: 2rem;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.filters select{
+    background: rgb(180, 0, 0);
+    color: white;
+    border: none;
+    width: 10rem;
+}
+
+.filters option{
+    background: rgb(180, 0, 0);
+    color: white;
 }
