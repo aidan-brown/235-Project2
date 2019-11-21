@@ -7,6 +7,12 @@ body{
 
     margin: 0;
     padding: 0;
+
+    cursor: default;
+}
+
+button{
+    cursor: pointer;
 }
 
 header{
@@ -93,7 +99,7 @@ main{
     
 }
 
-.poke-name{
+.poke-wiki{
     grid-area: name;
 
     text-align: center;
@@ -206,6 +212,10 @@ main{
 
 .poke-types .normal{
     background: lightgray;
+}
+
+.poke-types .rock{
+    background: burlywood;
 }
 
 .poke-types .poison{

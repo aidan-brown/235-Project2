@@ -141,6 +141,16 @@ function updateDisplay(index){
     }
     pokeName.innerHTML = name;
 
+    let pokeWiki = document.querySelector('.poke-wiki');
+    let linkName = currentPokemon.name.toLowerCase();
+    if(linkName.slice(linkName.length - 2) == '-f'){
+        linkName += 'emale';
+    }
+    else if(linkName.slice(linkName.length - 2) == '-m'){
+        linkName += 'ale';
+    }
+    pokeWiki.href = `https://www.pokemon.com/us/pokedex/${linkName}`;
+
     if(currentPokemon.data){
         let pokeSprite = document.querySelector('.poke-sprite');
         if(currentPokemon.data.types.length > 1){
@@ -163,7 +173,7 @@ function updateDisplay(index){
         let pokeStats = document.querySelector('.poke-stats');
         pokeStats.innerHTML = '';
         let stats = document.createElement('p');
-        for(let i = 0; i < currentPokemon.data.stats.length; i++){
+        for(let i = currentPokemon.data.stats.length - 1; i >= 0; i--){
             stats.innerHTML += `${currentPokemon.data.stats[i].stat.name[0].toUpperCase() + currentPokemon.data.stats[i].stat.name.slice(1)}: ${currentPokemon.data.stats[i].base_stat}<br/>`;
         }
         pokeStats.append(stats);
