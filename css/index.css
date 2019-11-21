@@ -31,7 +31,7 @@
     "name name name name"
     "sprite sprite stats stats"
     "sprite sprite types types"
-    "sprite sprite moves moves";
+    "sprite sprite abilities abilities";
     grid-template-columns: 2fr 2fr 2fr 2fr;
     grid-template-rows: 1fr 2fr 1fr minmax(2fr, 60rem);
 
@@ -44,7 +44,7 @@
 
     text-align: center;
     font-size: 3rem;
-    margin: 2rem auto auto auto;
+    margin: 2rem auto;
 
     height: 100%;
     width: 100%;
@@ -68,12 +68,23 @@
 
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    /* align-items: center; */
 }
 
 .poke-sprite img{
     width: 20rem;
+    align-self: center;
+}
+
+.poke-sprite p{
+    align-self: flex-start;
+    font-size: 1.75rem;
+    margin: 0;
+    padding: .25rem;
+
+    background: darkred;
+    color: lightpink;
 }
 
 .poke-stats{
@@ -82,9 +93,9 @@
     height: 100%;
     margin: auto;
 
-    border-style: solid;
-    border-color: darkred;
-    border-width: .5rem 0;
+    border-top-style: solid;
+    border-top-color: darkred;
+    border-top-width: .5rem;
 }
 
 .poke-stats p{
@@ -92,16 +103,20 @@
     margin: 1rem;
 }
 
-.poke-moves{
-    grid-area: moves;
+.poke-abilities{
+    grid-area: abilities;
 
     height: 10rem;
+
+    border-top-style: solid;
+    border-top-color: darkred;
+    border-top-width: .5rem;
 
     overflow-y: scroll;
     overflow-x: hidden;
 }
 
-.poke-moves p{
+.poke-abilities p{
     margin-left: 2rem;
 }
 
@@ -113,7 +128,7 @@
 
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    grid-template-rows: repeat(auto-fit, 50px);
+    grid-template-rows: repeat(auto-fit, auto);
     grid-gap: 4rem;
 
     text-align: center;

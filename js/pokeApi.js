@@ -8,11 +8,14 @@ const gen = {
     VII : 802
 }
 
-let pokeElements = new Array();
+const pokeElements = new Array();
 let limit = 802;
 
 const pokemonMoves = {};
 let moveLimit = 746;
+
+const pokemonAbilities = {};
+let abilityLimit = 233;
 
 let content = document.querySelector('#content');
 
@@ -33,6 +36,10 @@ function getPokemon(){
         createPokeElement(data[i], i + 1);
         if(i == 1){
             let dataReq = new XMLHttpRequest();
+            req.onload = () => {
+                let pokeData = JSON.parse(dataReq.responseText);
+                setData(i, pokeData);
+            };
             req.open('get', pokeElements[i].url, true);
             req.send();
         }
@@ -70,6 +77,29 @@ function getMoves(){
     req.send();
 }
 
+function getAbilities(){
+    let req = new XMLHttpRequest();
+
+    req.onload = () => {
+        let data = JSON.parse(req.responseText).results;
+
+        for(let ability of data){
+            let dataReq = new XMLHttpRequest();
+
+            dataReq.onload = () => {
+                let abilityData = JSON.parse(dataReq.responseText);
+                pokemonAbilities[ability.name] = abilityData.effect_entries[0].effect;
+            }; 
+            dataReq.open('get', ability.url, true);
+            dataReq.send();
+        }
+
+        
+    };
+    req.open('get', `https://pokeapi.co/api/v2/ability?limit=${abilityLimit}`, true);
+    req.send();
+}
+
 function createPokeElement(pokeData, id){
     let pokeElement = {name: pokeData.name[0].toUpperCase() + pokeData.name.slice(1), url: pokeData.url, data: null};
     if(pokeElement.name[pokeElement.name.length - 2] == '-'){
@@ -92,7 +122,7 @@ async function getPokeData(){
         req.send();
     }
 
-    getMoves();
+    getAbilities();
 }
 
 function setData(index, data){
@@ -113,7 +143,7 @@ function updateDisplay(index){
         else{
             pokeSprite.style.backgroundImage = `url(../images/types/${currentPokemon.data.types[0].type.name}.png)`;
         }
-        pokeSprite.innerHTML = `<img src=${currentPokemon.data.sprites['front_default']} />`
+        pokeSprite.innerHTML = `<p>#${index}</p><img src=${currentPokemon.data.sprites['front_default']} />`
 
         let pokeTypes = document.querySelector('.poke-types');
         pokeTypes.innerHTML = '';
@@ -132,22 +162,39 @@ function updateDisplay(index){
         }
         pokeStats.append(stats);
 
-        if(pokemonMoves){
-            let pokeMoves = document.querySelector('.poke-moves');
-            pokeMoves.innerHTML = '';
-            for(let move of currentPokemon.data.moves){
-                let pokeMove = document.createElement('p');
-                let name = move.move.name[0].toUpperCase() + move.move.name.slice(1);
+        if(pokemonAbilities){
+            let pokeAbilities = document.querySelector('.poke-abilities');
+            pokeAbilities.innerHTML = '';
+            for(let ability of currentPokemon.data.abilities){
+                let pokeAbility = document.createElement('p');
+                let name = ability.ability.name[0].toUpperCase() + ability.ability.name.slice(1);
                 while(name.indexOf('-') != -1){
                     let hyIndex = name.indexOf('-');
 
                     name = name.slice(0, hyIndex) + ' ' + name[hyIndex + 1].toUpperCase() + name.slice(hyIndex + 2);
                 }
 
-                pokeMove.innerHTML += `<strong>${name}</strong></br>  Type: ${pokemonMoves[move.move.name].type}</br>  `;
-                pokeMoves.append(pokeMove);
+                pokeAbility.innerHTML += `<strong>${name}</strong></br>       ${pokemonAbilities[ability.ability.name]}</br>`;
+                pokeAbilities.append(pokeAbility);
             }
         }
+
+        // if(pokemonMoves){
+        //     let pokeMoves = document.querySelector('.poke-moves');
+        //     pokeMoves.innerHTML = '';
+        //     for(let move of currentPokemon.data.moves){
+        //         let pokeMove = document.createElement('p');
+        //         let name = move.move.name[0].toUpperCase() + move.move.name.slice(1);
+        //         while(name.indexOf('-') != -1){
+        //             let hyIndex = name.indexOf('-');
+
+        //             name = name.slice(0, hyIndex) + ' ' + name[hyIndex + 1].toUpperCase() + name.slice(hyIndex + 2);
+        //         }
+
+        //         pokeMove.innerHTML += `<strong>${name}</strong></br>  Type: ${pokemonMoves[move.move.name].type}</br>  `;
+        //         pokeMoves.append(pokeMove);
+        //     }
+        // }
         
     }
 }
@@ -327,4 +374,4 @@ getPokeData();
 
 setTimeout(() => {
     updateDisplay(currentId);
-}, 500)
+}, 300)
