@@ -36,12 +36,12 @@ function getPokemon(){
         createPokeElement(data[i], i + 1);
         if(i == 1){
             let dataReq = new XMLHttpRequest();
-            req.onload = () => {
+            dataReq.onload = () => {
                 let pokeData = JSON.parse(dataReq.responseText);
                 setData(i, pokeData);
             };
-            req.open('get', pokeElements[i].url, true);
-            req.send();
+            dataReq.open('get', pokeElements[i].url, true);
+            dataReq.send();
         }
 
         if(i == data.length - 1){
@@ -133,7 +133,13 @@ function updateDisplay(index){
     let currentPokemon = pokeElements[index];
 
     let pokeName = document.querySelector('.poke-name');
-    pokeName.innerHTML = currentPokemon.name;
+    let name = currentPokemon.name[0].toUpperCase() + currentPokemon.name.slice(1);
+    while(name.indexOf('-') != -1){
+        let hyIndex = name.indexOf('-');
+
+        name = name.slice(0, hyIndex) + ' ' + name[hyIndex + 1].toUpperCase() + name.slice(hyIndex + 2);
+    }
+    pokeName.innerHTML = name;
 
     if(currentPokemon.data){
         let pokeSprite = document.querySelector('.poke-sprite');
@@ -215,7 +221,13 @@ function updateLinks(gen, type1, type2){
         if(filterPokemon(i, gen, type1, type2)){
             let pokeLink = document.createElement('p');
 
-            pokeLink.innerHTML = `#${i}: ` + pokeElements[i].name;
+            let name = pokeElements[i].name[0].toUpperCase() + pokeElements[i].name.slice(1);
+            while(name.indexOf('-') != -1){
+                let hyIndex = name.indexOf('-');
+
+                name = name.slice(0, hyIndex) + ' ' + name[hyIndex + 1].toUpperCase() + name.slice(hyIndex + 2);
+            }
+            pokeLink.innerHTML = `#${i}: ` + name;
 
             pokeLink.className = 'poke-link';
             pokeLink.onclick = () => {
@@ -383,4 +395,4 @@ getPokeData();
 
 setTimeout(() => {
     updateDisplay(currentId);
-}, 500)
+}, 200)

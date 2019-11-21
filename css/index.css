@@ -107,7 +107,7 @@ main{
 .poke-sprite{
     grid-area: sprite;
 
-    background: url(../images/background.jpg);
+    background: white;
     background-repeat: no-repeat;
     background-size: cover;
     background-origin: content-box;
