@@ -1,3 +1,4 @@
+// Gen enum that allows for easy filtering
 const gen = {
     I : 151,
     II : 251,
@@ -8,6 +9,7 @@ const gen = {
     VII : 802
 }
 
+// Type color enum that allows for easy styling based on the type of pokemon
 const typeColors = {
     water : 'slateblue',
     fire : 'orange',
@@ -29,17 +31,7 @@ const typeColors = {
     dragon : 'orangered'
 }
 
-let pokeElements = new Array();
-let limit = 802;
-
-let pokemonAbilities = {};
-let abilityLimit = 233;
-
-let content = document.querySelector('#content');
-
-let displayDefaultStyle = document.querySelector('.poke-display').style;
-
-
+// Function to get all the pokemon's names and urls
 function getPokemon(){
     let url = `https://pokeapi.co/api/v2/pokemon?limit=${limit}`;
 
@@ -72,6 +64,7 @@ function getPokemon(){
     
 }
 
+// Function to get all the pokemon abilities and store them in the local storage
 function getAbilities(){
     let req = new XMLHttpRequest();
 
@@ -95,6 +88,7 @@ function getAbilities(){
     req.send();
 }
 
+// Function to create a pokemon element and set the name and url appropriately
 function createPokeElement(pokeData, id){
     let pokeElement = {name: pokeData.name[0].toUpperCase() + pokeData.name.slice(1), url: pokeData.url, data: null};
     if(pokeElement.name[pokeElement.name.length - 2] == '-'){
@@ -103,6 +97,7 @@ function createPokeElement(pokeData, id){
     pokeElements[id] = pokeElement;
 }
 
+// Function to get the data of each pokemon and append it to the end of the appropriate pokemon element. Also stores the pokemon elements in the local storage
 async function getPokeData(){
     const p = getPokemon();
     await p;
@@ -124,10 +119,12 @@ async function getPokeData(){
     getAbilities();
 }
 
+// Function that appends data to the pokemon element at the given index
 function setData(index, data){
     pokeElements[index].data = {abilities: data.abilities, id: data.id, species: data.species, stats: data.stats, types: data.types, sprites: {front_default: data.sprites['front_default']}};
 }
 
+// Function that updates the display given a pokemon at a certain index
 function updateDisplay(index){
     let currentPokemon = pokeElements[index];
 
@@ -242,6 +239,7 @@ function updateDisplay(index){
     }
 }
 
+// Function that updates the list of pokemon based on certain filters
 function updateLinks(name, gen, type1, type2){
     let pokeLinks = document.querySelector('.poke-links');
     pokeLinks.innerHTML = '';
@@ -283,6 +281,7 @@ function updateLinks(name, gen, type1, type2){
     links = document.querySelectorAll('.poke-link');
 }
 
+// Function that filters pokemon based on a search term, generation, primary type, and secondary type
 function filterPokemon(pokemonId, name, generation, type1, type2){
     let pokemon = pokeElements[pokemonId];
     if(!name && generation == 'none' && type1 == 'none' && type2 == 'none'){
@@ -395,6 +394,7 @@ function filterPokemon(pokemonId, name, generation, type1, type2){
     }
 }
 
+// Function that resets the display so that it is blank
 function resetDisplay(){
     let wiki = document.querySelector('.poke-wiki');
     let name = document.querySelector('.poke-name');
@@ -416,6 +416,17 @@ function resetDisplay(){
     abilities.innerHTML = '';
 }
 
+// Defines variables that are used throughout the app
+let pokeElements = new Array();
+let limit = 802;
+
+let pokemonAbilities = {};
+let abilityLimit = 233;
+
+let content = document.querySelector('#content');
+
+let displayDefaultStyle = document.querySelector('.poke-display').style;
+
 let links = null;
 
 let currentIndex = 0;
@@ -435,6 +446,7 @@ let typeSelect1 = document.querySelector('#type1');
 let typeSelect2 = document.querySelector('#type2');
 let searchInput = document.querySelector('#search')
 
+// Sets the mouse events for each of the 4 buttons
 forwardArrow.onmousedown = () => {
     buttons.style.backgroundImage = 'url(../images/buttons-shadow-pressed-right.svg)';
 
@@ -491,6 +503,7 @@ downArrow.onmouseup = () => {
     buttons.style.backgroundImage = 'url(../images/buttons-shadow.svg)';
 };
 
+// Sets on change events that update the list of pokemon based on the values of the filters
 genSelect.onchange = () => {
     currentGen = genSelect.value;
     updateLinks(currentSearchTerm, currentGen, currentType1, currentType2);
@@ -547,6 +560,7 @@ searchInput.oninput = () => {
     }
 };
 
+// If the data hasn't been stored yet getPokeData() is called, otherwise the localStorage items are used
 if(!JSON.parse(localStorage.getItem('afb3535-abilities')) || !JSON.parse(localStorage.getItem('afb3535-elements'))){
     getPokeData();
 }
