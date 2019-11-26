@@ -10,15 +10,7 @@
     
 </head>
 <body>
-    <header>
-        <h1>Pokédex</h1>
-    </header>
-
-    
-
     <main>
-        <button class="page-button page-back">&larr;</button>
-        <button class="page-button page-forward">&rarr;</button>
         <div id='content'>
             <section class="poke-display">
                 <a class="poke-wiki" target="_blank"><h2 class="poke-name"></h2></a>
@@ -29,7 +21,7 @@
             </section>
             <div class="filters">
                 <select id="gen">
-                    <option value="none">Any Generation</option>
+                    <option value="none">Any Gen</option>
                     <option value="I">I</option>
                     <option value="II">II</option>
                     <option value="III">III</option>
@@ -39,7 +31,7 @@
                     <option value="VII">VII</option>
                 </select>
                 <select id="type1">
-                    <option value="none">Any Primary Type</option>
+                    <option value="none">Any 1st Type</option>
                     <option value="normal">Normal</option>
                     <option value="fighting">Fighting</option>
                     <option value="flying">Flying</option>
@@ -60,7 +52,7 @@
                     <option value="fairy">Fairy</option>
                 </select>
                 <select id="type2">
-                        <option value="none">Any Secondary Type</option>
+                        <option value="none">Any 2nd Type</option>
                         <option value="normal">Normal</option>
                         <option value="fighting">Fighting</option>
                         <option value="flying">Flying</option>
@@ -79,9 +71,16 @@
                         <option value="dragon">Dragon</option>
                         <option value="dark">Dark</option>
                         <option value="fairy">Fairy</option>
-                    </select>
+                </select>
+                <input id="search" placeholder="Search for a Pokémon">
             </div>
             <div class="poke-links"></div>
+            <div class="buttons">
+                <button class="page-up"></button>
+                <button class="page-back"></button>
+                <button class="page-forward"></button>
+                <button class="page-down"></button>
+            </div>
         </div>
     </main>
 

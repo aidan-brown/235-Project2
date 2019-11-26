@@ -8,16 +8,36 @@ const gen = {
     VII : 802
 }
 
-const pokeElements = new Array();
+const typeColors = {
+    water : 'slateblue',
+    fire : 'orange',
+    grass : 'lightgreen',
+    normal : 'lightgrey',
+    rock : 'burlywood',
+    poison : 'purple',
+    flying : 'skyblue',
+    bug : 'green',
+    electric : 'yellow',
+    ground : 'goldenrod',
+    fairy : 'pink',
+    psychic : 'violet',
+    steel : 'grey',
+    dark : 'darkslategrey',
+    ghost : 'darkviolet',
+    fighting : 'darkred',
+    ice : 'cyan',
+    dragon : 'orangered'
+}
+
+let pokeElements = new Array();
 let limit = 802;
 
-const pokemonMoves = {};
-let moveLimit = 746;
-
-const pokemonAbilities = {};
+let pokemonAbilities = {};
 let abilityLimit = 233;
 
 let content = document.querySelector('#content');
+
+let displayDefaultStyle = document.querySelector('.poke-display').style;
 
 
 function getPokemon(){
@@ -27,8 +47,6 @@ function getPokemon(){
 
     req.open('get', url, false);
     req.send();
-
-    console.log(req.responseText)
 
     let data = JSON.parse(req.responseText).results;
 
@@ -54,29 +72,6 @@ function getPokemon(){
     
 }
 
-function getMoves(){
-    let req = new XMLHttpRequest();
-
-    req.onload = () => {
-        let data = JSON.parse(req.responseText).results;
-
-        for(let move of data){
-            let dataReq = new XMLHttpRequest();
-
-            dataReq.onload = () => {
-                let moveData = JSON.parse(dataReq.responseText);
-                pokemonMoves[move.name] = {id: moveData.id, type: moveData.type.name[0].toUpperCase() + moveData.type.name.slice(1), damageType: moveData.damage_class.name[0].toUpperCase() + moveData.damage_class.name, power: moveData.power, pp: moveData.pp, accuracy: moveData.accuracy}
-            }; 
-            dataReq.open('get', move.url, true);
-            dataReq.send();
-        }
-
-        
-    };
-    req.open('get', `https://pokeapi.co/api/v2/move?limit=${moveLimit}`, true);
-    req.send();
-}
-
 function getAbilities(){
     let req = new XMLHttpRequest();
 
@@ -90,11 +85,11 @@ function getAbilities(){
                 let abilityData = JSON.parse(dataReq.responseText);
                 pokemonAbilities[ability.name] = abilityData.effect_entries[0].effect;
             }; 
-            dataReq.open('get', ability.url, true);
+            dataReq.open('get', ability.url, false);
             dataReq.send();
         }
 
-        
+        localStorage.setItem('afb3535-abilities', JSON.stringify(pokemonAbilities));
     };
     req.open('get', `https://pokeapi.co/api/v2/ability?limit=${abilityLimit}`, true);
     req.send();
@@ -112,21 +107,25 @@ async function getPokeData(){
     const p = getPokemon();
     await p;
     
-    updateLinks(currentGen, currentType1, currentType2);
+    updateLinks(currentSearchTerm, currentGen, currentType1, currentType2);
 
     for(let i = 1; i < pokeElements.length; i++){
         let req = new XMLHttpRequest();
 
-        req.onload = () => setData(i, JSON.parse(req.responseText))
-        req.open('get', pokeElements[i].url, true);
+        req.onload = () => {
+            setData(i, JSON.parse(req.responseText));
+        };
+        req.open('get', pokeElements[i].url, false);
         req.send();
     }
+
+    localStorage.setItem('afb3535-elements', JSON.stringify(pokeElements));
 
     getAbilities();
 }
 
 function setData(index, data){
-    pokeElements[index].data = data;
+    pokeElements[index].data = {abilities: data.abilities, id: data.id, species: data.species, stats: data.stats, types: data.types, sprites: {front_default: data.sprites['front_default']}};
 }
 
 function updateDisplay(index){
@@ -149,9 +148,7 @@ function updateDisplay(index){
 
     if(currentPokemon.data){
         if(currentPokemon.name.toLowerCase() != currentPokemon.data.species.name.toLowerCase()){
-            console.log(`Name: ${currentPokemon.name}; Species: ${currentPokemon.data.species.name}`)
             let form = currentPokemon.name.slice(currentPokemon.data.species.name.length + 1);
-            console.log(form);
             form = `(${form[0].toUpperCase() + form.slice(1)} Form)`;
     
             name += ` ${form}`;
@@ -197,12 +194,14 @@ function updateDisplay(index){
         }
 
         let pokeStats = document.querySelector('.poke-stats');
-        pokeStats.innerHTML = '';
-        let stats = document.createElement('p');
-        for(let i = currentPokemon.data.stats.length - 1; i >= 0; i--){
-            stats.innerHTML += `${currentPokemon.data.stats[i].stat.name[0].toUpperCase() + currentPokemon.data.stats[i].stat.name.slice(1)}: ${currentPokemon.data.stats[i].base_stat}<br/>`;
-        }
-        pokeStats.append(stats);
+        pokeStats.innerHTML = `
+        <div><p>HP:</p><p>${currentPokemon.data.stats[5].base_stat}</p></div>
+        <div><p>Attack:</p><p>${currentPokemon.data.stats[4].base_stat}</p></div>
+        <div><p>Defense:</p><p>${currentPokemon.data.stats[3].base_stat}</p></div>
+        <div><p>SP. ATK:</p><p>${currentPokemon.data.stats[2].base_stat}</p></div>
+        <div><p>SP. DEF:</p><p>${currentPokemon.data.stats[1].base_stat}</p></div>
+        <div><p>Speed:</p><p>${currentPokemon.data.stats[0].base_stat}</p></div>
+        `;
 
         if(pokemonAbilities){
             let pokeAbilities = document.querySelector('.poke-abilities');
@@ -229,32 +228,25 @@ function updateDisplay(index){
                 pokeAbilities.append(pokeAbility);
             }
         }
+    }
 
-        // if(pokemonMoves){
-        //     let pokeMoves = document.querySelector('.poke-moves');
-        //     pokeMoves.innerHTML = '';
-        //     for(let move of currentPokemon.data.moves){
-        //         let pokeMove = document.createElement('p');
-        //         let name = move.move.name[0].toUpperCase() + move.move.name.slice(1);
-        //         while(name.indexOf('-') != -1){
-        //             let hyIndex = name.indexOf('-');
-
-        //             name = name.slice(0, hyIndex) + ' ' + name[hyIndex + 1].toUpperCase() + name.slice(hyIndex + 2);
-        //         }
-
-        //         pokeMove.innerHTML += `<strong>${name}</strong></br>  Type: ${pokemonMoves[move.move.name].type}</br>  `;
-        //         pokeMoves.append(pokeMove);
-        //     }
-        // }
-        
+    if(currentPokemon.data.types.length > 1){
+        document.querySelectorAll('.poke-display>div').forEach(element => element.style.borderColor = typeColors[currentPokemon.data.types[1].type.name]);
+        document.querySelector('.poke-sprite p').style.backgroundColor = typeColors[currentPokemon.data.types[1].type.name];
+        document.querySelector('.poke-wiki').style.backgroundColor = typeColors[currentPokemon.data.types[1].type.name];
+    }
+    else{
+        document.querySelectorAll('.poke-display>div').forEach(element => element.style.borderColor = typeColors[currentPokemon.data.types[0].type.name]);
+        document.querySelector('.poke-sprite p').style.backgroundColor = typeColors[currentPokemon.data.types[0].type.name];
+        document.querySelector('.poke-wiki').style.backgroundColor = typeColors[currentPokemon.data.types[0].type.name];
     }
 }
 
-function updateLinks(gen, type1, type2){
+function updateLinks(name, gen, type1, type2){
     let pokeLinks = document.querySelector('.poke-links');
     pokeLinks.innerHTML = '';
     for(let i = 1; i < pokeElements.length; i++){
-        if(filterPokemon(i, gen, type1, type2)){
+        if(filterPokemon(i, name, gen, type1, type2)){
             let pokeLink = document.createElement('p');
 
             let name = pokeElements[i].name[0].toUpperCase() + pokeElements[i].name.slice(1);
@@ -263,22 +255,37 @@ function updateLinks(gen, type1, type2){
 
                 name = name.slice(0, hyIndex) + ' ' + name[hyIndex + 1].toUpperCase() + name.slice(hyIndex + 2);
             }
-            pokeLink.innerHTML = `#${i}: ` + name;
+            pokeLink.innerHTML = `#${i}<br/>${name}`;
 
             pokeLink.className = 'poke-link';
             pokeLink.onclick = () => {
                 currentId = i;
                 updateDisplay(currentId);
+
+                for(let i = 0; i < links.length; i++){
+                    if(links[i] == pokeLink){
+                        currentIndex = i;
+                        break;
+                    }
+                }
+
+                for(let link of links){
+                    link.style.color = 'darkslateblue';
+                }
+
+                pokeLink.style.color = 'slateblue';
             }
 
             pokeLinks.append(pokeLink);
         }
     }
+
+    links = document.querySelectorAll('.poke-link');
 }
 
-function filterPokemon(pokemonId, generation, type1, type2){
+function filterPokemon(pokemonId, name, generation, type1, type2){
     let pokemon = pokeElements[pokemonId];
-    if(generation == 'none' && type1 == 'none' && type2 == 'none'){
+    if(!name && generation == 'none' && type1 == 'none' && type2 == 'none'){
         return true;
     }
     else{
@@ -380,55 +387,172 @@ function filterPokemon(pokemonId, generation, type1, type2){
             }
         }
 
+        if(name && !pokemon.name.toLowerCase().includes(name.toLowerCase())){
+            check = false;
+        }
+
         return check;
     }
 }
 
-let currentId = 1;
+function resetDisplay(){
+    let wiki = document.querySelector('.poke-wiki');
+    let name = document.querySelector('.poke-name');
+    let sprite = document.querySelector('.poke-sprite');
+    let types = document.querySelector('.poke-types');
+    let stats = document.querySelector('.poke-stats');
+    let abilities = document.querySelector('.poke-abilities');
+
+    wiki.style.background = 'none';
+    wiki.href = '#';
+    name.innerHTML = '';
+    sprite.style.backgroundImage = 'none';
+    sprite.style.borderColor = 'rgba(0, 0, 0, 0)';
+    sprite.innerHTML = '';
+    types.innerHTML = '';
+    stats.style.borderColor = 'rgba(0, 0, 0, 0)';
+    stats.innerHTML = '';
+    abilities.style.borderColor = 'rgba(0, 0, 0, 0)';
+    abilities.innerHTML = '';
+}
+
+let links = null;
+
+let currentIndex = 0;
 let currentGen = 'none';
 let currentType1 = 'none';
 let currentType2 = 'none';
+let currentSearchTerm = '';
 
+let buttons = document.querySelector('.buttons');
 let forwardArrow = document.querySelector('.page-forward');
 let backArrow = document.querySelector('.page-back');
+let upArrow = document.querySelector('.page-up');
+let downArrow = document.querySelector('.page-down');
+
 let genSelect = document.querySelector('#gen');
 let typeSelect1 = document.querySelector('#type1');
 let typeSelect2 = document.querySelector('#type2');
+let searchInput = document.querySelector('#search')
 
-forwardArrow.onclick = () => {
-    if(limit > currentId){
-        currentId++;
+forwardArrow.onmousedown = () => {
+    buttons.style.backgroundImage = 'url(../images/buttons-shadow-pressed-right.svg)';
 
-        updateDisplay(currentId);
+    if(links.length > currentIndex){
+        currentIndex++;
+
+        links[currentIndex].click();
     }
 };
 
-backArrow.onclick = () => {
-    if(1 < currentId){
-        currentId--;
+forwardArrow.onmouseup = () => {
+    buttons.style.backgroundImage = 'url(../images/buttons-shadow.svg)';
+};
 
-        updateDisplay(currentId);
+backArrow.onmousedown = () => {
+    buttons.style.backgroundImage = 'url(../images/buttons-shadow-pressed-left.svg)';
+
+    if(0 < currentIndex){
+        currentIndex--;
+
+        links[currentIndex].click();
     }
+};
+
+backArrow.onmouseup = () => {
+    buttons.style.backgroundImage = 'url(../images/buttons-shadow.svg)';
+};
+
+upArrow.onmousedown = () => {
+    buttons.style.backgroundImage = 'url(../images/buttons-shadow-pressed-up.svg)';
+
+    if(1 < currentIndex){
+        currentIndex -= 2;
+
+        links[currentIndex].click();
+    }
+};
+
+upArrow.onmouseup = () => {
+    buttons.style.backgroundImage = 'url(../images/buttons-shadow.svg)';
+};
+
+downArrow.onmousedown = () => {
+    buttons.style.backgroundImage = 'url(../images/buttons-shadow-pressed-down.svg)';
+
+    if(links.length - 1 > currentIndex){
+        currentIndex += 2;
+
+        links[currentIndex].click();
+    }
+};
+
+downArrow.onmouseup = () => {
+    buttons.style.backgroundImage = 'url(../images/buttons-shadow.svg)';
 };
 
 genSelect.onchange = () => {
     currentGen = genSelect.value;
-    updateLinks(currentGen, currentType1, currentType2);
+    updateLinks(currentSearchTerm, currentGen, currentType1, currentType2);
+
+    links = document.querySelectorAll('.poke-link');
+    currentIndex = 0;
+    if(links.length > 0){
+        links[currentIndex].click();
+    }
+    else{
+        resetDisplay();
+    }
 };
 
 typeSelect1.onchange = () => {
     currentType1 = typeSelect1.value;
-    updateLinks(currentGen, currentType1, currentType2);
+    updateLinks(currentSearchTerm, currentGen, currentType1, currentType2);
+
+    links = document.querySelectorAll('.poke-link');
+    currentIndex = 0;
+    if(links.length > 0){
+        links[currentIndex].click();
+    } 
+    else{
+        resetDisplay();
+    }
 }
 
 typeSelect2.onchange = () => {
     currentType2 = typeSelect2.value;
-    updateLinks(currentGen, currentType1, currentType2);
+    updateLinks(currentSearchTerm, currentGen, currentType1, currentType2);
+
+    links = document.querySelectorAll('.poke-link');
+    currentIndex = 0;
+    if(links.length > 0){
+        links[currentIndex].click();
+    } 
+    else{
+        resetDisplay();
+    }
 }
 
+searchInput.oninput = () => {
+    currentSearchTerm = searchInput.value;
+    updateLinks(currentSearchTerm, currentGen, currentType1, currentType2);
 
-getPokeData();
+    links = document.querySelectorAll('.poke-link');
+    currentIndex = 0;
+    if(links.length > 0){
+        links[currentIndex].click();
+    } 
+    else{
+        resetDisplay();
+    }
+};
 
-setTimeout(() => {
-    updateDisplay(currentId);
-}, 200)
+if(!JSON.parse(localStorage.getItem('afb3535-abilities')) || !JSON.parse(localStorage.getItem('afb3535-elements'))){
+    getPokeData();
+}
+else{
+    pokemonAbilities = JSON.parse(localStorage.getItem('afb3535-abilities'));
+    pokeElements = JSON.parse(localStorage.getItem('afb3535-elements'));
+
+    updateLinks(currentSearchTerm, currentGen, currentType1, currentType2);
+}
