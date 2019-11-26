@@ -174,10 +174,10 @@ function updateDisplay(index){
     if(currentPokemon.data){
         let pokeSprite = document.querySelector('.poke-sprite');
         if(currentPokemon.data.types.length > 1){
-            pokeSprite.style.backgroundImage = `url(../images/types/${currentPokemon.data.types[1].type.name}.png)`;
+            pokeSprite.style.backgroundImage = `url(./images/types/${currentPokemon.data.types[1].type.name}.png)`;
         }
         else{
-            pokeSprite.style.backgroundImage = `url(../images/types/${currentPokemon.data.types[0].type.name}.png)`;
+            pokeSprite.style.backgroundImage = `url(./images/types/${currentPokemon.data.types[0].type.name}.png)`;
         }
         pokeSprite.innerHTML = `<p>#${index}</p><img src=${currentPokemon.data.sprites['front_default']} />`
 
@@ -448,7 +448,7 @@ let searchInput = document.querySelector('#search')
 
 // Sets the mouse events for each of the 4 buttons
 forwardArrow.onmousedown = () => {
-    buttons.style.backgroundImage = 'url(../images/buttons-shadow-pressed-right.svg)';
+    buttons.style.backgroundImage = 'url(./images/buttons-shadow-pressed-right.svg)';
 
     if(links.length > currentIndex){
         currentIndex++;
@@ -458,11 +458,11 @@ forwardArrow.onmousedown = () => {
 };
 
 forwardArrow.onmouseup = () => {
-    buttons.style.backgroundImage = 'url(../images/buttons-shadow.svg)';
+    buttons.style.backgroundImage = 'url(./images/buttons-shadow.svg)';
 };
 
 backArrow.onmousedown = () => {
-    buttons.style.backgroundImage = 'url(../images/buttons-shadow-pressed-left.svg)';
+    buttons.style.backgroundImage = 'url(./images/buttons-shadow-pressed-left.svg)';
 
     if(0 < currentIndex){
         currentIndex--;
@@ -472,11 +472,11 @@ backArrow.onmousedown = () => {
 };
 
 backArrow.onmouseup = () => {
-    buttons.style.backgroundImage = 'url(../images/buttons-shadow.svg)';
+    buttons.style.backgroundImage = 'url(./images/buttons-shadow.svg)';
 };
 
 upArrow.onmousedown = () => {
-    buttons.style.backgroundImage = 'url(../images/buttons-shadow-pressed-up.svg)';
+    buttons.style.backgroundImage = 'url(./images/buttons-shadow-pressed-up.svg)';
 
     if(1 < currentIndex){
         currentIndex -= 2;
@@ -486,11 +486,11 @@ upArrow.onmousedown = () => {
 };
 
 upArrow.onmouseup = () => {
-    buttons.style.backgroundImage = 'url(../images/buttons-shadow.svg)';
+    buttons.style.backgroundImage = 'url(./images/buttons-shadow.svg)';
 };
 
 downArrow.onmousedown = () => {
-    buttons.style.backgroundImage = 'url(../images/buttons-shadow-pressed-down.svg)';
+    buttons.style.backgroundImage = 'url(./images/buttons-shadow-pressed-down.svg)';
 
     if(links.length - 1 > currentIndex){
         currentIndex += 2;
@@ -500,7 +500,7 @@ downArrow.onmousedown = () => {
 };
 
 downArrow.onmouseup = () => {
-    buttons.style.backgroundImage = 'url(../images/buttons-shadow.svg)';
+    buttons.style.backgroundImage = 'url(./images/buttons-shadow.svg)';
 };
 
 // Sets on change events that update the list of pokemon based on the values of the filters
