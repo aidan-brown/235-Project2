@@ -77,12 +77,13 @@ function getAbilities(){
             dataReq.onload = () => {
                 let abilityData = JSON.parse(dataReq.responseText);
                 pokemonAbilities[ability.name] = abilityData.effect_entries[0].effect;
+                if(Object.keys(pokemonAbilities).length == abilityLimit){
+                    localStorage.setItem('afb3535-abilities', JSON.stringify(pokemonAbilities));
+                }
             }; 
-            dataReq.open('get', ability.url, false);
+            dataReq.open('get', ability.url, true);
             dataReq.send();
         }
-
-        localStorage.setItem('afb3535-abilities', JSON.stringify(pokemonAbilities));
     };
     req.open('get', `https://pokeapi.co/api/v2/ability?limit=${abilityLimit}`, true);
     req.send();
@@ -109,12 +110,15 @@ async function getPokeData(){
 
         req.onload = () => {
             setData(i, JSON.parse(req.responseText));
+            if(pokeElements.filter(pokemon => pokemon.data).length == limit){
+                localStorage.setItem('afb3535-elements', JSON.stringify(pokeElements));
+            }
         };
-        req.open('get', pokeElements[i].url, false);
+        req.open('get', pokeElements[i].url, true);
         req.send();
     }
 
-    localStorage.setItem('afb3535-elements', JSON.stringify(pokeElements));
+    
 
     getAbilities();
 }
