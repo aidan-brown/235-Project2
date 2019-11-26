@@ -28,6 +28,23 @@ main {
     box-shadow: .5rem .5rem rgb(70, 0, 0);
 }
 
+#doc{
+    font-family: 'Press Start 2P', Arial, Helvetica, sans-serif;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1rem solid rgba(0, 0, 0, 0);
+    border-radius: 0 0 1rem 0;
+    color: white;
+    text-decoration: none;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+#doc:hover{
+    color: rgb(184, 184, 184);
+}
+
 #content {
     grid-area: content;
 
