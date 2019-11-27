@@ -476,12 +476,14 @@ main {
 
     background: radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(37,37,37,1) 100%);
     color: white;
-    width: 98.5%;
+    width: 100%;
 
     border-color: darkred darkred darkred darkred;
     border-style: solid;
     border-width: .25rem .25rem .25rem .25rem;
     border-radius: 0 0 1rem 1rem;
+
+    box-sizing: border-box;
 
     margin: 0;
 
@@ -584,7 +586,7 @@ main {
     }
 
     .poke-display {
-        width: 97%;
+        width: 85%;
         height: 40rem;
 
         grid-template-areas:
@@ -593,18 +595,30 @@ main {
         "stats abilities"
         "types  abilities";
         grid-template-columns: 1fr 1fr;
-        grid-template-rows: .5fr 2fr 2fr 2fr;
+        grid-template-rows: .5fr 2fr 2fr .5fr;
+
+        margin: auto;
     }
 
     .poke-links{
         grid-template-columns: repeat(2, 1fr);
+
+        width: 90%;
+
+        margin: auto;
     }
 
     .filters {
-        margin-left: 1rem;
-    }
+        width: 80%;
 
-    .filters #search{
-        width: 99.4%;
+        grid-template-columns: repeat(3, 1fr);
+
+        margin: auto;
+    }
+}
+
+@media only screen and (max-width: 655px){
+    .filters select{
+        font-size: .45rem;
     }
 }
